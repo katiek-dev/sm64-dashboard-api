@@ -1,20 +1,20 @@
 import express from 'express';
-import { getLevels, getLevel, createLevel } from '../controllers/levelController.js';
+import { getLevels, getLevel, createLevel, updateLevel, deleteLevel } from '../controllers/levelController.js';
 const router = express.Router();
 
 // Get all levels
 router.get('/', getLevels);
 
-// // Get single level
+// Get single level
 router.get('/:id', getLevel);
 
-// // Create a new level
+// Create a new level
 router.post('/', createLevel);
 
-// // Update a level
-// router.put('/:id', updateLevel);
+// Update a level
+router.put('/:id', updateLevel);
 
-// // Delete a level
-// router.delete('/:id', deleteLevel);
+// Delete a level
+router.delete('/:id', deleteLevel);
 
 export default router;
