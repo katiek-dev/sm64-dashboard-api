@@ -105,6 +105,7 @@ export const createLevel = async (req, res, next) => {
 // @desc Update a level
 // @route PUT /api/levels/:id with level_name in the body
 export const updateLevel = async (req, res, next) => {
+    console.log("update controller running")
     try {
         // Assign the sent data to variable(s)
         const level_id = Number(req.params.id);
