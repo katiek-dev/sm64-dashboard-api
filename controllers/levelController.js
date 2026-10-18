@@ -105,8 +105,8 @@ export const createLevel = async (req, res, next) => {
 // @desc Update a level
 // @route PUT /api/levels/:id with level_name in the body
 export const updateLevel = async (req, res, next) => {
-    console.log("update controller running")
     try {
+
         // Assign the sent data to variable(s)
         const level_id = Number(req.params.id);
 
@@ -115,7 +115,7 @@ export const updateLevel = async (req, res, next) => {
             return res.status(400).json({
                 error: `Invalid level ID: ${level_id}`
             });
-        }
+        };
 
         const { level_name } = req.body;
 
@@ -124,7 +124,7 @@ export const updateLevel = async (req, res, next) => {
             return res.status(400).json({
                 error: 'Level name undefined'
             });
-        }
+        };
 
         if (typeof level_name !== 'string' || level_name.length > 100) {
             return res.status(400).json({
