@@ -14,13 +14,13 @@ export const getIndividualLevels = async (req, res, next) => {
         }
 
         let query = 'SELECT * FROM individual_levels';
-        const values = []
+        const values = [];
 
         // If the user supplies a name, then add this search functionality to the SQL statement
         if (individual_level_name) {
             query += ' WHERE individual_level_name ILIKE $1';
             values.push(`%${individual_level_name}%`);
-        }
+        };
 
         query += ' ORDER BY individual_level_id';
 

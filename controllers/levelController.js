@@ -82,17 +82,20 @@ export const createLevel = async (req, res, next) => {
     try {
         const level_name = req.body.level_name;
 
+        // section id is a foreign key in reference to the section that this level is a part of
+        const section_id = Number(req.body.section_id);
+
         // Validate level name (make sure its a string and is not more than 100 character long)
         if (typeof level_name !== 'string' || level_name.length > 100) {
             return res.status(400).json({
-                error: 'Level must be a string and no longer than 100 characters'
+                error: 'Level name must be a string and no longer than 100 characters'
             });
-        }
+        };
 
         // Parameterized query
         const result = await pool.query(
-            'INSERT INTO levels (level_name) VALUES ($1) RETURNING *',
-            [level_name]
+            'INSERT INTO levels (level_name, section_id) VALUES ($1, $2) RETURNING *',
+            [level_name, section_id]
         );
 
         res.status(201).json(result.rows[0]);
@@ -182,6 +185,7 @@ export const deleteLevel = async (req, res, next) => {
             message: `Level with id of ${level_id} successfully deleted`
         })
     } catch (error) {
-        
+        // Go to next piece of middleware 
+        next(error);
     }
 };

@@ -1,6 +1,7 @@
 import express from 'express';
 import levels from './routes/levels.js';
 import individualLevels from './routes/individualLevels.js';
+import sections from './routes/sections.js';
 import logger from './middleware/logger.js';
 import errorHandler from './middleware/error.js';
 import notFound from './middleware/notFound.js';
@@ -24,6 +25,7 @@ app.use(cors());
 // Routes
 app.use('/api/levels', levels);
 app.use('/api/individual-levels', individualLevels);
+app.use('/api/sections', sections)
 
 // Route not found middleware
 app.use(notFound);
