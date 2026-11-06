@@ -1,27 +1,57 @@
 import pool from '../db.js';
 
-// @desc get all sections or filter by section name
+// @desc get all sections, filter by section name, or optionally include levels with a query parameter
 // @route GET /api/sections/
 export const getSections = async (req, res, next) => {
     try {
-        const { section_name } = req.query;
+        const { section_name, include } = req.query;
 
         // If there is a section name, then validate it
         if ( (section_name !== undefined) && (typeof section_name !== 'string' || section_name.length > 100) ) {
             return res.status(400).json({
                 error: `Invalid section name, must be a string and less than 100 characters`
-            })
-        }
+            });
+        };
 
-        let query = 'SELECT * from sections';
+        // If there is an include parameter, validate it (it can only be levels and has to be defined)
+        if (include !== undefined && include !== 'levels') {
+            return res.status(400).json({
+                message: `Invalid include parameter, support value is levels`
+            });
+        };
+
+        
+        let query;
         const values = [];
+
+        // If user did add the include parameter for levels, include them by joining tables
+        if (include === 'levels') {
+            query = `
+              SELECT
+	            sections.section_id, 
+	            sections.section_name, 
+	            JSON_AGG(
+		            JSON_BUILD_OBJECT('level_id', levels.level_id, 'level_name', levels.level_name)
+	            ) FILTER (WHERE levels.level_id IS NOT NULL) 
+	            AS levels
+            FROM sections LEFT JOIN levels 
+            ON sections.section_id = levels.section_id GROUP BY sections.section_id
+            `;
+        } else { 
+            query = 'SELECT * FROM sections';
+        }
 
         // If the user did supply a section name, then add that to the search functionality
         if (section_name !== undefined) {
-            query += " WHERE section_name ILIKE $1";
+            if (include === 'levels') {
+                query += ' WHERE sections.section_name ILIKE $1';
+            } else {
+                query += " WHERE section_name ILIKE $1";
+            }
             values.push(`%${section_name}%`);
         }
 
+        // Sort results
         query += ' ORDER BY section_id'
 
         // Run the query
